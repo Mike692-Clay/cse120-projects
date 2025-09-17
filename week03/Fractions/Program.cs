@@ -1,5 +1,42 @@
 using System;
 
+class Fraction
+{
+    private int numerator;
+    private int denominator;
+
+    // default constructor (0/1)
+    public Fraction()
+    {
+        numerator = 0;
+        denominator = 1;
+    }
+
+    // whole number constructor
+    public Fraction(int wholeNumber)
+    {
+        numerator = wholeNumber;
+        denominator = 1;
+    }
+
+    // numerator/denominator constructor
+    public Fraction(int numerator, int denominator)
+    {
+        this.numerator = numerator;
+        this.denominator = denominator;
+    }
+
+    public string GetFractionString()
+    {
+        return $"{numerator}/{denominator}";
+    }
+
+    public double GetDecimalValue()
+    {
+        return (double)numerator / denominator;
+    }
+}
+
 class Program
 {
     static void Main(string[] args)
