@@ -1,87 +1,166 @@
 using System;
 using System.Collections.Generic;
 
-class Comment
+// -------------------- Product --------------------
+class Product
 {
-    public string CommenterName { get; set; }
-    public string Text { get; set; }
+    private string _name;
+    private string _productId;
+    private double _price;
+    private int _quantity;
 
-    public Comment(string commenterName, string text)
+    public Product(string name, string productId, double price, int quantity)
     {
-        CommenterName = commenterName;
-        Text = text;
+        _name = name;
+        _productId = productId;
+        _price = price;
+        _quantity = quantity;
+    }
+
+    public string Name { get { return _name; } }
+    public string ProductId { get { return _productId; } }
+    public double Price { get { return _price; } }
+    public int Quantity { get { return _quantity; } }
+
+    public double GetTotalCost()
+    {
+        return _price * _quantity;
     }
 }
 
-class Video
+// -------------------- Address --------------------
+class Address
 {
-    public string Title { get; set; }
-    public string Author { get; set; }
-    public int LengthSeconds { get; set; }
+    private string _street;
+    private string _city;
+    private string _stateProvince;
+    private string _country;
 
-    private List<Comment> comments = new List<Comment>();
-
-    public Video(string title, string author, int lengthSeconds)
+    public Address(string street, string city, string stateProvince, string country)
     {
-        Title = title;
-        Author = author;
-        LengthSeconds = lengthSeconds;
+        _street = street;
+        _city = city;
+        _stateProvince = stateProvince;
+        _country = country;
     }
 
-    public void AddComment(Comment comment)
+    public string Country { get { return _country; } }
+
+    public bool IsInUSA()
     {
-        comments.Add(comment);
+        return _country.Trim().ToUpper() == "USA";
     }
 
-    public int GetCommentCount()
+    public string GetFullAddress()
     {
-        return comments.Count;
+        return $"{_street}\n{_city}, {_stateProvince}\n{_country}";
+    }
+}
+
+// -------------------- Customer --------------------
+class Customer
+{
+    private string _name;
+    private Address _address;
+
+    public Customer(string name, Address address)
+    {
+        _name = name;
+        _address = address;
     }
 
-    public void DisplayVideoInfo()
-    {
-        Console.WriteLine($"Title: {Title}");
-        Console.WriteLine($"Author: {Author}");
-        Console.WriteLine($"Length: {LengthSeconds} seconds");
-        Console.WriteLine($"Comments ({GetCommentCount()}):");
+    public string Name { get { return _name; } }
+    public Address Address { get { return _address; } }
 
-        foreach (Comment c in comments)
+    public bool LivesInUSA()
+    {
+        return _address.IsInUSA();
+    }
+}
+
+// -------------------- Order --------------------
+class Order
+{
+    private List<Product> _products;
+    private Customer _customer;
+
+    public Order(Customer customer)
+    {
+        _customer = customer;
+        _products = new List<Product>();
+    }
+
+    public void AddProduct(Product product)
+    {
+        _products.Add(product);
+    }
+
+    public double GetTotalCost()
+    {
+        double total = 0;
+        foreach (Product p in _products)
         {
-            Console.WriteLine($"  {c.CommenterName}: {c.Text}");
+            total += p.GetTotalCost();
         }
-        Console.WriteLine();
+
+        // Add shipping
+        if (_customer.LivesInUSA())
+        {
+            total += 5;
+        }
+        else
+        {
+            total += 35;
+        }
+
+        return total;
+    }
+
+    public string GetPackingLabel()
+    {
+        string label = "Packing Label:\n";
+        foreach (Product p in _products)
+        {
+            label += $"{p.Name} (ID: {p.ProductId})\n";
+        }
+        return label;
+    }
+
+    public string GetShippingLabel()
+    {
+        return $"Shipping Label:\n{_customer.Name}\n{_customer.Address.GetFullAddress()}";
     }
 }
 
+// -------------------- Main Program --------------------
 class Program
 {
     static void Main(string[] args)
     {
-        // Create a few videos
-        Video video1 = new Video("How to Cook Pasta", "ChefMike", 600);
-        video1.AddComment(new Comment("Alice", "This helped me a lot!"));
-        video1.AddComment(new Comment("Bob", "Great recipe, thanks."));
-        video1.AddComment(new Comment("Charlie", "Can you make a vegan version?"));
+        // First customer (USA)
+        Address address1 = new Address("123 Maple Street", "Springfield", "IL", "USA");
+        Customer customer1 = new Customer("John Doe", address1);
+        Order order1 = new Order(customer1);
 
-        Video video2 = new Video("Learn C# Basics", "CodeAcademy", 1200);
-        video2.AddComment(new Comment("Dave", "Very clear explanation."));
-        video2.AddComment(new Comment("Eva", "Can you do advanced topics next?"));
-        video2.AddComment(new Comment("Frank", "I finally understand classes!"));
+        order1.AddProduct(new Product("Laptop", "P001", 1200.00, 1));
+        order1.AddProduct(new Product("Mouse", "P002", 25.00, 2));
 
-        Video video3 = new Video("Top 10 Travel Destinations", "GlobeTrotter", 900);
-        video3.AddComment(new Comment("Grace", "Adding these to my bucket list!"));
-        video3.AddComment(new Comment("Henry", "I’ve been to 3 of these already."));
-        video3.AddComment(new Comment("Isabella", "Great video and editing."));
+        Console.WriteLine(order1.GetPackingLabel());
+        Console.WriteLine(order1.GetShippingLabel());
+        Console.WriteLine($"Total Price: ${order1.GetTotalCost()}\n");
 
-        // Put them in a list
-        List<Video> videos = new List<Video> { video1, video2, video3 };
+        // Second customer (International)
+        Address address2 = new Address("456 King Road", "Toronto", "ON", "Canada");
+        Customer customer2 = new Customer("Jane Smith", address2);
+        Order order2 = new Order(customer2);
 
-        // Display info for each video
-        foreach (Video v in videos)
-        {
-            v.DisplayVideoInfo();
-        }
+        order2.AddProduct(new Product("Headphones", "P003", 75.00, 1));
+        order2.AddProduct(new Product("Keyboard", "P004", 100.00, 1));
+        order2.AddProduct(new Product("Monitor", "P005", 250.00, 2));
+
+        Console.WriteLine(order2.GetPackingLabel());
+        Console.WriteLine(order2.GetShippingLabel());
+        Console.WriteLine($"Total Price: ${order2.GetTotalCost()}");
     }
 }
-
 
