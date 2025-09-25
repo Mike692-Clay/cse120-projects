@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lazy Load Image Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <h1>Lazy Loading Image Showcase</h1>
+    <img src="https://picsum.photos/400/650?random=1" alt="Random portrait 1" loading="lazy">
+    <img src="https://picsum.photos/400/700?random=2" alt="Random portrait 2" loading="lazy">
+    <img src="https://picsum.photos/400/750?random=3" alt="Random portrait 3" loading="lazy">
+    <img src="https://picsum.photos/400/800?random=4" alt="Random portrait 4" loading="lazy">
+    <img src="https://picsum.photos/400/850?random=5" alt="Random portrait 5" loading="lazy">
+    <img src="https://picsum.photos/400/900?random=6" alt="Random portrait 6" loading="lazy">
+  </main>
+
+  <footer>
+    <p>© 2025 ACME Wildwest Services</p>
+    <p id="last-modified"></p>
+  </footer>
+
+  <script>
+    document.getElementById("last-modified").textContent = 
+      "Last modified: " + document.lastModified;
+  </script>
+</body>
+</html>
